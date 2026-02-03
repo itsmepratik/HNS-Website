@@ -1,0 +1,38 @@
+import React from 'react';
+
+export interface ServiceFeature {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+}
+
+export interface Review {
+  id: string;
+  name: string;
+  rating: number;
+  text: string;
+  date: string;
+  carModel: string;
+}
+
+export interface PriceTier {
+  id: string;
+  name: string;
+  price: number;
+  originalPrice: number;
+  features: string[];
+  recommended: boolean;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  brand: string;
+  price: number;
+  category: 'Oil' | 'Filter' | 'Additive';
+  viscosity?: string;
+  image: string;
+  rating: number;
+  reviews: number;
+}
