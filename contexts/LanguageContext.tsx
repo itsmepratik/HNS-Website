@@ -8,6 +8,7 @@ interface LanguageContextType {
   setLanguage: (lang: Language) => void;
   t: (key: string) => any;
   dir: 'ltr' | 'rtl';
+  formatNumber: (num: string | number) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -30,8 +31,15 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return current;
   };
 
+  const formatNumber = (num: string | number) => {
+    const str = num.toString();
+    if (language !== 'ar') return str;
+    const map = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+    return str.replace(/\d/g, (d) => map[parseInt(d)]);
+  };
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t, dir: language === 'ar' ? 'rtl' : 'ltr' }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t, dir: language === 'ar' ? 'rtl' : 'ltr', formatNumber }}>
       {children}
     </LanguageContext.Provider>
   );

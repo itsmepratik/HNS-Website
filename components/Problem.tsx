@@ -66,7 +66,7 @@ export const Problem: React.FC = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <div className="h-48 rounded-lg bg-black overflow-hidden relative border border-white/10 group">
-                  <img src="https://images.unsplash.com/photo-1516550893885-3b952a22530c?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" alt="Clean Oil" />
+                  <img src="https://plus.unsplash.com/premium_photo-1661963073722-6b99b6623637?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-all duration-500" alt="Clean Oil" />
                   <div className="absolute bottom-2 left-2 rtl:left-auto rtl:right-2 bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded font-mono border border-emerald-500/30">
                     {t('problem.clean')}
                   </div>

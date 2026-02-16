@@ -4,7 +4,7 @@ import { MapPin, Phone, Calendar } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 interface FooterProps {
-  onNavigate?: (view: 'home' | 'catalogue' | 'ai-advisor' | 'locations' | 'privacy' | 'terms' | 'warranty') => void;
+  onNavigate?: (view: 'home' | 'catalogue' | 'ai-advisor' | 'locations' | 'about' | 'blog' | 'privacy' | 'terms' | 'warranty') => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
@@ -45,9 +45,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <div className="flex items-center gap-2 mb-4">
                <span className="text-xl font-bold text-white">HNS<span className="text-brand-500">.</span></span>
             </div>
-            <p className="text-neutral-500 text-sm">
+            <p className="text-neutral-500 text-sm mb-4">
               {t('footer.desc')}
             </p>
+             <div className="flex gap-4">
+                <button onClick={() => handleLinkClick('about')} className="text-brand-500 text-sm font-bold hover:underline">
+                  {t('nav.about')}
+                </button>
+                <button onClick={() => handleLinkClick('blog')} className="text-brand-500 text-sm font-bold hover:underline">
+                  {t('nav.blog')}
+                </button>
+             </div>
           </div>
           
           <div>

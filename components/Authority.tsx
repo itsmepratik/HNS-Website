@@ -4,7 +4,7 @@ import { Award, Wrench, Star, Users, Zap } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export const Authority: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, formatNumber } = useLanguage();
   
   return (
     <>
@@ -39,15 +39,15 @@ export const Authority: React.FC = () => {
           
           <div className="grid grid-cols-2 gap-4">
             <div className="glass-panel p-6 rounded-2xl text-center">
-              <p className="text-4xl font-bold text-white font-mono mb-2">5k+</p>
+              <p className="text-4xl font-bold text-white font-mono mb-2">{formatNumber('5k+')}</p>
               <p className="text-neutral-400 text-sm">{t('authority.stat_saved')}</p>
             </div>
             <div className="glass-panel p-6 rounded-2xl text-center">
-              <p className="text-4xl font-bold text-white font-mono mb-2">15m</p>
+              <p className="text-4xl font-bold text-white font-mono mb-2">{formatNumber('15m')}</p>
               <p className="text-neutral-400 text-sm">{t('authority.stat_time')}</p>
             </div>
             <div className="glass-panel p-6 rounded-2xl text-center col-span-2">
-              <p className="text-4xl font-bold text-brand-500 font-mono mb-2">100%</p>
+              <p className="text-4xl font-bold text-brand-500 font-mono mb-2">{formatNumber('100%')}</p>
               <p className="text-neutral-400 text-sm">{t('authority.stat_guarantee')}</p>
             </div>
           </div>
@@ -86,7 +86,7 @@ export const Authority: React.FC = () => {
                 </div>
               ))}
               <div className="w-12 h-12 rounded-full border-2 border-neutral-950 bg-brand-500 flex items-center justify-center text-neutral-900 font-bold text-xs">
-                +500
+                {formatNumber('+500')}
               </div>
            </div>
            <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">

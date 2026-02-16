@@ -23,21 +23,26 @@ export const Section: React.FC<SectionProps> = ({
   const sectionRef = useRef<HTMLElement>(null);
 
   useGSAP(() => {
+    // Reset any previous state to ensure clean animation
+    gsap.set(sectionRef.current, { clearProps: "all" });
+
     // Animate the section content when it comes into view
     gsap.fromTo(sectionRef.current, 
       { 
-        y: 50, 
+        y: 60, 
         opacity: 0 
       },
       {
         y: 0,
         opacity: 1,
-        duration: 1,
+        duration: 0.8,
         ease: "power3.out",
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 85%", // Animation starts when top of section hits 85% of viewport height
-          toggleActions: "play none none reverse" // Play on enter, reverse on leave back up
+          // Start animation when top of section hits 90% of viewport height (almost bottom)
+          // This ensures it triggers earlier on the way down
+          start: "top 95%", 
+          toggleActions: "play none none none",
         }
       }
     );
@@ -54,6 +59,8 @@ export const Section: React.FC<SectionProps> = ({
       ref={sectionRef}
       id={id} 
       className={`relative w-full ${bgClasses[background]} ${noPadding ? '' : 'py-16 md:py-24'} transition-colors duration-300 ${className}`}
+      // Set initial opacity to 0 via style to prevent flash before animation
+      style={{ opacity: 0 }} 
     >
       <div className="container mx-auto px-4 md:px-6 max-w-7xl">
         {children}

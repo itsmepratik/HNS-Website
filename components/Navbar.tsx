@@ -1,14 +1,37 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from './ui/Button';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Globe, Menu, X } from 'lucide-react';
+import { Globe, Menu, X, Box, Cpu, MapPin, Layers, Users, BookOpen } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
 interface NavbarProps {
-  onNavigate?: (view: 'home' | 'catalogue' | 'ai-advisor' | 'locations' | 'privacy' | 'terms' | 'warranty') => void;
+  onNavigate?: (view: 'home' | 'catalogue' | 'ai-advisor' | 'locations' | 'about' | 'blog' | 'privacy' | 'terms' | 'warranty') => void;
   currentView?: string;
 }
+
+const NavButton = ({ label, onClick, active, tooltip }: { label: string, onClick: () => void, active: boolean, tooltip: string }) => (
+  <button 
+    onClick={onClick} 
+    className={`group relative flex items-center justify-center gap-1.5 py-2 px-1 transition-colors duration-300 ${active ? 'text-brand-500' : 'text-neutral-400 hover:text-white'}`}
+  >
+    <span className="relative z-10 font-medium tracking-wide text-sm">{label}</span>
+    
+    {/* Active Indicator - Liquid Dot */}
+    {active && (
+        <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-brand-500 rounded-full shadow-[0_0_10px_#d5f365] animate-pulse"></span>
+    )}
+    
+    {/* Tooltip with enhanced animation - Z-index fixed */}
+    <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 scale-90 translate-y-[-10px] group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 transition-all duration-300 ease-out pointer-events-none whitespace-nowrap z-[100]">
+        <div className="bg-[#0f0f0f]/95 backdrop-blur-xl border border-white/10 text-[10px] uppercase tracking-widest text-brand-50 px-3 py-2 rounded shadow-[0_10px_30px_-5px_rgba(0,0,0,0.8)] relative border-b-brand-500/50">
+            {tooltip}
+            {/* Arrow */}
+            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#0f0f0f]/95 border-t border-l border-white/10 rotate-45"></div>
+        </div>
+    </div>
+  </button>
+);
 
 export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView = 'home' }) => {
   const [scrolled, setScrolled] = useState(false);
@@ -56,7 +79,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView = 'home'
     setIsMobileMenuOpen(false);
     if (onNavigate && currentView !== 'home') {
       onNavigate('home');
-      // Adding a small delay to allow the view to change before scrolling
       setTimeout(() => {
          document.getElementById('offer')?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
@@ -80,10 +102,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView = 'home'
     <div className={`fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none`}>
        <nav 
          ref={navRef}
-         className={`w-full max-w-6xl pointer-events-auto transition-all duration-500 rounded-2xl border overflow-hidden
+         // Removed overflow-hidden to allow tooltips to show
+         // Enhanced liquid glass effect
+         className={`w-full max-w-6xl pointer-events-auto transition-all duration-500 rounded-2xl border
            ${scrolled || isMobileMenuOpen 
-             ? 'bg-neutral-900/60 backdrop-blur-2xl border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]' 
-             : 'bg-neutral-900/40 backdrop-blur-xl border-white/10 shadow-lg shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]'}
+             ? 'bg-[#121212]/80 backdrop-blur-2xl border-white/10 border-t-white/20 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.5)] shadow-[0_0_0_1px_rgba(213,243,101,0.05)]' 
+             : 'bg-[#121212]/50 backdrop-blur-xl border-white/5 border-t-white/10 shadow-lg'
+           }
          `}
        >
         <div className="flex flex-col">
@@ -99,36 +124,50 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView = 'home'
             </div>
             
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-8">
-              <div className="flex gap-6 text-sm font-medium text-neutral-400">
-                <button 
+            <div className="hidden md:flex items-center gap-6 lg:gap-8">
+              <div className="flex gap-4 lg:gap-6 text-sm font-medium text-neutral-400">
+                <NavButton 
+                  label={t('nav.about')} 
+                  onClick={() => handleNavClick('about')} 
+                  active={currentView === 'about'}
+                  tooltip={t('nav.tooltips.about')}
+                />
+                <NavButton 
+                  label={t('nav.products')} 
                   onClick={() => handleNavClick('catalogue')} 
-                  className={`hover:text-white transition-colors relative ${currentView === 'catalogue' ? 'text-white' : ''}`}
-                >
-                  {t('nav.products')}
-                  {currentView === 'catalogue' && <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-brand-500 rounded-full"></span>}
-                </button>
-                <button 
+                  active={currentView === 'catalogue'}
+                  tooltip={t('nav.tooltips.products')}
+                />
+                <NavButton 
+                  label={t('nav.ai_check')} 
                   onClick={() => handleNavClick('ai-advisor')} 
-                  className={`flex items-center gap-1.5 hover:text-white transition-colors relative ${currentView === 'ai-advisor' ? 'text-brand-500' : 'text-brand-500/80'}`}
-                >
-                  {t('nav.ai_check')}
-                  {currentView === 'ai-advisor' && <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-brand-500 rounded-full"></span>}
-                </button>
-                <button 
+                  active={currentView === 'ai-advisor'}
+                  tooltip={t('nav.tooltips.ai_check')}
+                />
+                <NavButton 
+                  label={t('nav.blog')} 
+                  onClick={() => handleNavClick('blog')} 
+                  active={currentView === 'blog'}
+                  tooltip={t('nav.tooltips.blog')}
+                />
+                <NavButton 
+                  label={t('nav.locations')} 
                   onClick={() => handleNavClick('locations')} 
-                  className={`hover:text-white transition-colors relative ${currentView === 'locations' ? 'text-white' : ''}`}
-                >
-                  {t('nav.locations')}
-                  {currentView === 'locations' && <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-brand-500 rounded-full"></span>}
-                </button>
-                <button onClick={() => {
-                    handleNavClick('home');
-                    setTimeout(() => document.getElementById('offer')?.scrollIntoView({ behavior: 'smooth' }), 100);
-                }} className="hover:text-white transition-colors">{t('nav.pricing')}</button>
+                  active={currentView === 'locations'}
+                  tooltip={t('nav.tooltips.locations')}
+                />
+                <NavButton 
+                  label={t('nav.pricing')} 
+                  onClick={() => {
+                      handleNavClick('home');
+                      setTimeout(() => document.getElementById('offer')?.scrollIntoView({ behavior: 'smooth' }), 100);
+                  }}
+                  active={false}
+                  tooltip={t('nav.tooltips.pricing')}
+                />
               </div>
               
-              {/* Divider - made more visible */}
+              {/* Divider */}
               <div className="h-6 w-px bg-white/20"></div>
               
               <div className="flex items-center gap-2">
@@ -162,25 +201,42 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView = 'home'
             </button>
           </div>
 
-          {/* Mobile Menu Dropdown */}
-          <div ref={menuRef} className="hidden md:hidden border-t border-white/10 bg-black/95 backdrop-blur-xl">
+          {/* Mobile Menu Dropdown - Added overflow-hidden and rounded-b-2xl to clip content properly during animation */}
+          <div ref={menuRef} className="hidden md:hidden border-t border-white/10 bg-black/95 backdrop-blur-xl overflow-hidden rounded-b-2xl">
             <div className="flex flex-col p-6 gap-4">
+                <button 
+                  onClick={() => handleNavClick('about')} 
+                  className={`mobile-nav-item text-left py-3 px-4 rounded-lg hover:bg-white/5 transition-colors text-lg font-medium flex items-center gap-3 ${currentView === 'about' ? 'text-white bg-white/5' : 'text-neutral-400'}`}
+                >
+                  <Users size={18} className="text-brand-500" />
+                  {t('nav.about')}
+                </button>
                <button 
                   onClick={() => handleNavClick('catalogue')} 
-                  className={`mobile-nav-item text-left py-3 px-4 rounded-lg hover:bg-white/5 transition-colors text-lg font-medium ${currentView === 'catalogue' ? 'text-white bg-white/5' : 'text-neutral-400'}`}
+                  className={`mobile-nav-item text-left py-3 px-4 rounded-lg hover:bg-white/5 transition-colors text-lg font-medium flex items-center gap-3 ${currentView === 'catalogue' ? 'text-white bg-white/5' : 'text-neutral-400'}`}
                 >
+                  <Box size={18} className="text-brand-500" />
                   {t('nav.products')}
                 </button>
                 <button 
                   onClick={() => handleNavClick('ai-advisor')} 
-                  className={`mobile-nav-item text-left py-3 px-4 rounded-lg hover:bg-white/5 transition-colors text-lg font-medium flex items-center gap-2 ${currentView === 'ai-advisor' ? 'text-brand-500 bg-brand-500/10' : 'text-brand-500/80'}`}
+                  className={`mobile-nav-item text-left py-3 px-4 rounded-lg hover:bg-white/5 transition-colors text-lg font-medium flex items-center gap-3 ${currentView === 'ai-advisor' ? 'text-brand-500 bg-brand-500/10' : 'text-brand-500/80'}`}
                 >
+                  <Cpu size={18} />
                   {t('nav.ai_check')}
                 </button>
                 <button 
-                  onClick={() => handleNavClick('locations')} 
-                  className={`mobile-nav-item text-left py-3 px-4 rounded-lg hover:bg-white/5 transition-colors text-lg font-medium ${currentView === 'locations' ? 'text-white bg-white/5' : 'text-neutral-400'}`}
+                  onClick={() => handleNavClick('blog')} 
+                  className={`mobile-nav-item text-left py-3 px-4 rounded-lg hover:bg-white/5 transition-colors text-lg font-medium flex items-center gap-3 ${currentView === 'blog' ? 'text-white bg-white/5' : 'text-neutral-400'}`}
                 >
+                  <BookOpen size={18} className="text-brand-500" />
+                  {t('nav.blog')}
+                </button>
+                <button 
+                  onClick={() => handleNavClick('locations')} 
+                  className={`mobile-nav-item text-left py-3 px-4 rounded-lg hover:bg-white/5 transition-colors text-lg font-medium flex items-center gap-3 ${currentView === 'locations' ? 'text-white bg-white/5' : 'text-neutral-400'}`}
+                >
+                  <MapPin size={18} className="text-brand-500" />
                   {t('nav.locations')}
                 </button>
                 <button 
@@ -188,8 +244,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView = 'home'
                     handleNavClick('home');
                     setTimeout(() => document.getElementById('offer')?.scrollIntoView({ behavior: 'smooth' }), 100);
                   }} 
-                  className="mobile-nav-item text-left py-3 px-4 rounded-lg hover:bg-white/5 transition-colors text-lg font-medium text-neutral-400"
+                  className="mobile-nav-item text-left py-3 px-4 rounded-lg hover:bg-white/5 transition-colors text-lg font-medium flex items-center gap-3 text-neutral-400"
                 >
+                  <Layers size={18} className="text-brand-500" />
                   {t('nav.pricing')}
                 </button>
                 

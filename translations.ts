@@ -2,18 +2,22 @@
 export const translations = {
   en: {
     hero: {
-      status: "SYSTEM STATUS: CRITICAL",
-      title_1: "PREMIUM OIL.",
+      status: "Top Rated Oil Change in Saham",
+      title_1: "GENUINE OIL.",
       title_2: "INSTANT POWER.",
       subtitle: "Restore your engine in 15 minutes. Better mileage, smoother ride, zero hassle.",
-      cta: "SAVE MY ENGINE NOW",
+      cta: "GET AN OIL CHANGE",
       call: "CALL EXPERT",
       spots: "12 spots",
       spots_rem: "remaining for today",
-      stat_1: "Avg. Repair Saved",
+      stat_1: "Improved Mileage",
       stat_2: "Performance Boost",
       stat_3: "Engine Protection",
-      val_3: "100% Guaranteed"
+      val_3: "100% Guaranteed",
+      google_rating: "4.9/5 Rating",
+      google_sub: "1.2k+ Google Reviews",
+      award_title: "Product Excellence",
+      award_sub: "2023 Winner"
     },
     booking: {
       title: "Priority Reservation",
@@ -25,10 +29,18 @@ export const translations = {
       date: "Select preferred date",
       submit: "CONFIRM RESERVATION",
       success: "Request Received!",
+      success_sub: "Our specialized technicians are preparing for your arrival.",
       premium: "Premium Synthetic",
       standard: "Standard Blend",
       price_prem: "8.000 OMR",
-      price_std: "18.000 OMR"
+      price_std: "18.000 OMR",
+      errors: {
+        required: "This field is required",
+        name_short: "Name must be at least 3 characters",
+        phone_invalid: "Please enter a valid phone number",
+        vehicle_short: "Please enter specific model details",
+        date_past: "Date cannot be in the past"
+      }
     },
     brands: {
       title: "Trusted Service For All Major Manufacturers"
@@ -55,7 +67,7 @@ export const translations = {
       alert_desc: "Metal shavings detected in old oil samples indicate internal engine grinding."
     },
     solution: {
-      protocol: "The TurboLube Protocol",
+      protocol: "The HNS Protocol",
       title_start: "The",
       title_highlight: "15-Minute",
       title_end: "Precision Service.",
@@ -68,6 +80,18 @@ export const translations = {
       step3_desc: "We refill with manufacturer-approved full synthetic oil, metered to the exact milliliter.",
       step4_title: "21-Point Inspection",
       step4_desc: "While the oil drains, we digitally scan your vehicle's health systems for free."
+    },
+    services: {
+      title: "Complete Core Services",
+      subtitle: "Beyond oil. We handle the critical components that keep your vehicle alive.",
+      oil_title: "Precision Oil Change",
+      oil_desc: "Full synthetic flush and fill using manufacturer-grade lubricants specific to your engine block.",
+      battery_title: "Battery Replacement",
+      battery_desc: "Heavy-duty AGM battery installation designed for Oman's extreme heat conditions.",
+      brake_title: "Disc Skimming & Pads",
+      brake_desc: "Laser-guided disc resurfacing and ceramic pad installation to eliminate brake fade and squeal.",
+      tire_title: "Tire Repair & Nitrogen",
+      tire_desc: "Puncture repair using vulcanized patching and Nitrogen inflation for stable pressure."
     },
     authority: {
       title: "Certified by the Best. Trusted by Locals.",
@@ -93,22 +117,36 @@ export const translations = {
     },
     offer: {
       scarcity: "Limited Time Offer Ends In:",
-      choose: "Choose Your Performance Level",
-      transparent: "Transparent pricing. No hidden disposal fees.",
-      std_title: "Standard Blend",
-      std_feat1: "Conventional Oil up to 5qts",
-      std_feat2: "Standard Oil Filter",
-      std_feat3: "10-Point Visual Check",
-      book_std: "Book Standard",
-      pop_badge: "Most Popular",
-      prem_title: "Premium Full Synthetic",
-      first_time: "FIRST TIME CUSTOMER SPECIAL",
-      limit: "Limit 1 per customer. Up to 5 quarts.",
-      prem_feat1: "Premium Synthetic Oil (5qts)",
-      prem_feat2: "High-Performance Filter",
-      prem_feat3: "21-Point Digital Inspection",
-      prem_feat4: "Fluid Top-offs Included",
-      claim: "CLAIM THIS OFFER",
+      choose: "Service Packages",
+      transparent: "Comprehensive care for every vehicle type.",
+      
+      std_title: "Standard Package",
+      std_desc: "Essential maintenance for daily drivers.",
+      std_feat1: "Conventional Oil Change",
+      std_feat2: "Oil Filter Replacement",
+      std_feat3: "Air Filter Check",
+      std_feat4: "10-Point Visual Inspection",
+      std_feat5: "Tire Pressure Check",
+      
+      prem_title: "Premium Package",
+      prem_desc: "Complete protection for high-performance.",
+      prem_feat1: "Full Synthetic Oil Change",
+      prem_feat2: "Premium Oil Filter",
+      prem_feat3: "Air Filter Replacement",
+      prem_feat4: "Cabin Air Filter Change",
+      prem_feat5: "21-Point Digital Inspection",
+      prem_feat6: "Fluid Top-offs (Brake, Coolant)",
+      
+      fleet_title: "Fleet Package",
+      fleet_desc: "Commercial grade service for business.",
+      fleet_feat1: "Custom Oil Formulations",
+      fleet_feat2: "All Filter Replacements",
+      fleet_feat3: "Priority Bay Access",
+      fleet_feat4: "Detailed Fleet Reports",
+      fleet_feat5: "Credit Facility Available",
+      
+      book_quote: "REQUEST QUOTE",
+      pop_badge: "Best Value",
       guarantee_title: "100% Ironclad Satisfaction Guarantee",
       guarantee_desc: "If your car doesn't feel smoother or if you find a cleaner oil change within 30 days, we will refund every penny and pay for your next service elsewhere. No questions asked."
     },
@@ -126,21 +164,31 @@ export const translations = {
     footer: {
       title: "Don't Let Your Engine Decay Another Day",
       subtitle: "The sludge is building up right now. Protection is cheap. Repair is expensive.",
-      cta: "SECURE MY 7.500 OMR APPOINTMENT",
+      cta: "SECURE YOUR OIL CHANGE",
       desc: "Precision engine care for the modern driver. Fast, transparent, and technically superior.",
       contact: "Contact",
       legal: "Legal",
       privacy: "Privacy Policy",
       terms: "Terms of Service",
       warranty: "Warranty Details",
-      rights: "TurboLube Precision. All rights reserved."
+      rights: "HNS Precision. All rights reserved."
     },
     nav: {
-      pricing: "Pricing",
+      pricing: "Services",
       locations: "Locations",
       products: "Catalogue",
       ai_check: "AI Advisor",
-      book: "BOOK NOW"
+      book: "BOOK NOW",
+      about: "Our Story",
+      blog: "Journal",
+      tooltips: {
+        about: "Discover our legacy & team",
+        products: "Browse certified parts inventory",
+        ai_check: "AI-powered engine diagnostics",
+        locations: "Find workshops in Saham",
+        pricing: "View service packages",
+        blog: "Automotive insights & tips"
+      }
     },
     catalogue: {
       title: "Parts Catalogue",
@@ -178,28 +226,74 @@ export const translations = {
       hours_title: "Operating Hours",
       hours_val: "Saturday - Thursday: 8:00 AM - 9:00 PM\nFriday: 2:00 PM - 9:00 PM",
       contact_title: "Direct Contact",
-      get_directions: "Get Directions"
+      get_directions: "Get Directions",
+      finder_title: "Nearest Location Finder",
+      finder_btn: "Find Closest Workshop",
+      calculating: "Calculating distance...",
+      nearest_found: "Nearest Location Found",
+      distance: "Distance",
+      open_maps: "Navigate Now",
+      location_blocked: "Location access needed to find nearest shop."
     },
     legal: {
       privacy_title: "Privacy Policy",
       terms_title: "Terms of Service",
       warranty_title: "Warranty Policy"
+    },
+    about: {
+      title: "The HNS Legacy",
+      subtitle: "A story of generational excellence, precision engineering, and an unwavering commitment to automotive integrity.",
+      founder_title: "The Founder",
+      founder_name: "Mohammed Abul Hossain",
+      founder_role: "Chairman & Founder",
+      founder_desc: "The visionary who laid the cornerstone of HNS. Operating from three strategic locations in Saham, Mr. Abul Hossain didn't just build a workshop; he built a reputation for absolute reliability. His philosophy acts as the company's moral compass: precision is not optional, it is the only standard.",
+      legacy_stat_1: "3 Locations",
+      legacy_stat_2: "30 Years",
+      legacy_stat_3: "1 Family",
+      next_gen_title: "The Evolution",
+      rifat_name: "Mohammed Rifat Hossain",
+      rifat_role: "Managing Director & Successor",
+      rifat_desc: "The architect of HNS's modern era. Combining academic excellence from Sohar University with deep operational insight, Rifat is transforming the family business into a scalable, tech-driven enterprise. He represents the bridge between traditional values and future innovation, destined to lead HNS to international acclaim.",
+      ashiq_name: "Mohammed Ashiq",
+      ashiq_role: "Global Strategist",
+      ashiq_desc: "The global eye of HNS. Stationed in Spain, Ashiq analyzes international automotive trends and European service standards. His role ensures that HNS stays ahead of the curve, importing cutting-edge methodologies that keep the company world-class.",
+      vision_title: "Our Horizon",
+      vision_desc: "We are not just maintaining cars; we are engineering trust. From the heart of Saham to the global stage, HNS is redefining what it means to care for a machine."
+    },
+    blog: {
+      title: "The Performance Journal",
+      subtitle: "Technical insights, maintenance protocols, and automotive culture from the HNS engineering team.",
+      featured: "Featured Insight",
+      read_more: "Read Article",
+      read_time: "min read",
+      search_placeholder: "Search articles...",
+      categories: {
+        all: "All Posts",
+        tech: "Tech",
+        maintenance: "Maintenance",
+        industry: "Industry",
+        tips: "Tips"
+      }
     }
   },
   ar: {
     hero: {
-      status: "حالة النظام: حرجة",
-      title_1: "زيت ممتاز.",
+      status: "تغيير الزيت الأعلى تقييماً في صحم",
+      title_1: "زيت أصلي.",
       title_2: "أداء فوري.",
       subtitle: "جدد محركك في 15 دقيقة. توفير وقود، قيادة سلسة، وبدون متاعب.",
-      cta: "أنقذ محركي الآن",
+      cta: "احصل على تغيير زيت",
       call: "اتصل بالخبير",
       spots: "12 مكان",
       spots_rem: "متبقي لهذا اليوم",
-      stat_1: "توفير في الإصلاحات",
+      stat_1: "تحسين استهلاك الوقود",
       stat_2: "زيادة في الأداء",
       stat_3: "حماية المحرك",
-      val_3: "مضمون 100٪"
+      val_3: "مضمون 100٪",
+      google_rating: "تقييم ٤.٩/٥",
+      google_sub: "١٢٠٠+ مراجعة جوجل",
+      award_title: "تميز المنتج",
+      award_sub: "الفائز لعام ٢٠٢٣"
     },
     booking: {
       title: "حجز أولوي",
@@ -211,10 +305,18 @@ export const translations = {
       date: "اختر التاريخ المفضل",
       submit: "تأكيد الحجز",
       success: "تم استلام الطلب!",
+      success_sub: "يقوم فنيونا المتخصصون بالتحضير لوصولك.",
       premium: "صناعي ممتاز",
       standard: "مزيج قياسي",
       price_prem: "8.000 ر.ع",
-      price_std: "18.000 ر.ع"
+      price_std: "18.000 ر.ع",
+      errors: {
+        required: "هذا الحقل مطلوب",
+        name_short: "يجب أن يكون الاسم 3 أحرف على الأقل",
+        phone_invalid: "يرجى إدخال رقم هاتف صحيح",
+        vehicle_short: "يرجى إدخال تفاصيل الموديل",
+        date_past: "لا يمكن أن يكون التاريخ في الماضي"
+      }
     },
     brands: {
       title: "خدمة موثوقة لجميع الشركات المصنعة الكبرى"
@@ -241,7 +343,7 @@ export const translations = {
       alert_desc: "تم اكتشاف برادة معدنية في عينات الزيت القديمة تشير إلى تآكل داخلي للمحرك."
     },
     solution: {
-      protocol: "بروتوكول تيربو لوب",
+      protocol: "بروتوكول HNS",
       title_start: "خدمة دقيقة في",
       title_highlight: "15 دقيقة",
       title_end: "فقط.",
@@ -254,6 +356,18 @@ export const translations = {
       step3_desc: "نعيد التعبئة بزيت صناعي كامل معتمد من الشركة المصنعة، معاير بدقة المليمتر.",
       step4_title: "فحص 21 نقطة",
       step4_desc: "أثناء تصريف الزيت، نقوم بمسح رقمي لأنظمة صحة سيارتك مجانًا."
+    },
+    services: {
+      title: "الخدمات الأساسية الشاملة",
+      subtitle: "أبعد من الزيت. نحن نتعامل مع المكونات الحيوية التي تبقي سيارتك على قيد الحياة.",
+      oil_title: "تغيير زيت دقيق",
+      oil_desc: "غسيل وتعبئة صناعية كاملة باستخدام زيوت معتمدة من المصنع خصيصًا لكتلة محرك سيارتك.",
+      battery_title: "استبدال البطارية",
+      battery_desc: "تركيب بطاريات AGM عالية التحمل مصممة لظروف الحرارة الشديدة في عمان.",
+      brake_title: "خرط أقراص الفرامل",
+      brake_desc: "إعادة تسوية الأقراص بالليزر وتركيب وسادات سيراميك للتخلص من ضعف الفرامل والصفير.",
+      tire_title: "إصلاح الإطارات والنيتروجين",
+      tire_desc: "إصلاح الثقوب باستخدام الرقع البركانية ونفخ النيتروجين لضغط مستقر."
     },
     authority: {
       title: "معتمدون من الأفضل. موثوقون محلياً.",
@@ -279,22 +393,36 @@ export const translations = {
     },
     offer: {
       scarcity: "العرض لفترة محدودة ينتهي في:",
-      choose: "اختر مستوى الأداء",
-      transparent: "أسعار شفافة. لا رسوم خفية.",
-      std_title: "المزيج القياسي",
-      std_feat1: "زيت تقليدي حتى 5 كوارت",
-      std_feat2: "فلتر زيت قياسي",
-      std_feat3: "فحص بصري 10 نقاط",
-      book_std: "حجز قياسي",
-      pop_badge: "الأكثر شعبية",
-      prem_title: "زيت صناعي كامل ممتاز",
-      first_time: "عرض للعملاء الجدد",
-      limit: "حد 1 لكل عميل. حتى 5 كوارت.",
-      prem_feat1: "زيت صناعي ممتاز (5 كوارت)",
-      prem_feat2: "فلتر عالي الأداء",
-      prem_feat3: "فحص رقمي 21 نقطة",
-      prem_feat4: "شامل تعبئة السوائل",
-      claim: "احصل على العرض",
+      choose: "باقات الخدمة",
+      transparent: "رعاية شاملة لكل أنواع المركبات.",
+      
+      std_title: "الباقة القياسية",
+      std_desc: "صيانة أساسية للقيادة اليومية.",
+      std_feat1: "تغيير زيت تقليدي",
+      std_feat2: "استبدال فلتر الزيت",
+      std_feat3: "فحص فلتر الهواء",
+      std_feat4: "فحص بصري 10 نقاط",
+      std_feat5: "فحص ضغط الإطارات",
+      
+      prem_title: "الباقة الممتازة",
+      prem_desc: "حماية كاملة للأداء العالي.",
+      prem_feat1: "تغيير زيت صناعي كامل",
+      prem_feat2: "فلتر زيت ممتاز",
+      prem_feat3: "استبدال فلتر الهواء",
+      prem_feat4: "تغيير فلتر هواء المقصورة",
+      prem_feat5: "فحص رقمي 21 نقطة",
+      prem_feat6: "تعبئة السوائل (فرامل، تبريد)",
+      
+      fleet_title: "باقة الأسطول",
+      fleet_desc: "خدمة تجارية للأعمال.",
+      fleet_feat1: "تركيبات زيت مخصصة",
+      fleet_feat2: "استبدال جميع الفلاتر",
+      fleet_feat3: "أولوية الوصول للخدمة",
+      fleet_feat4: "تقارير أسطول مفصلة",
+      fleet_feat5: "تسهيلات ائتمانية متاحة",
+      
+      book_quote: "طلب عرض سعر",
+      pop_badge: "أفضل قيمة",
       guarantee_title: "ضمان رضا حديدي 100٪",
       guarantee_desc: "إذا لم تشعر أن سيارتك أكثر سلاسة أو إذا وجدت تغيير زيت أنظف في غضون 30 يومًا، فسنعيد كل قرش وندفع مقابل خدمتك التالية في مكان آخر. دون أي أسئلة."
     },
@@ -312,21 +440,31 @@ export const translations = {
     footer: {
       title: "لا تدع محركك يتآكل يوماً آخر",
       subtitle: "الرواسب تتراكم الآن. الحماية رخيصة. الإصلاح مكلف.",
-      cta: "حجز موعد بـ 7.500 ر.ع",
+      cta: "احجز تغيير الزيت",
       desc: "عناية دقيقة بالمحرك للسائق العصري. سريع، شفاف، ومتفوق تقنياً.",
       contact: "اتصل بنا",
       legal: "قانوني",
       privacy: "سياسة الخصوصية",
       terms: "شروط الخدمة",
       warranty: "تفاصيل الضمان",
-      rights: "تيربو لوب. جميع الحقوق محفوظة."
+      rights: "HNS Precision. جميع الحقوق محفوظة."
     },
     nav: {
-      pricing: "الأسعار",
+      pricing: "الخدمات",
       locations: "المواقع",
       products: "الكتالوج",
       ai_check: "مستشار الذكاء الاصطناعي",
-      book: "احجز الآن"
+      book: "احجز الآن",
+      about: "قصتنا",
+      blog: "المدونة",
+      tooltips: {
+        about: "اكتشف إرثنا وفريقنا",
+        products: "تصفح مخزون قطع الغيار المعتمدة",
+        ai_check: "تشخيص المحرك بالذكاء الاصطناعي",
+        locations: "اعثر على الورش في صحم",
+        pricing: "عرض باقات الخدمة",
+        blog: "مقالات ونصائح السيارات"
+      }
     },
     catalogue: {
       title: "كتالوج قطع الغيار",
@@ -364,12 +502,54 @@ export const translations = {
       hours_title: "ساعات العمل",
       hours_val: "السبت - الخميس: 8:00 صباحاً - 9:00 مساءً\nالجمعة: 2:00 مساءً - 9:00 مساءً",
       contact_title: "اتصال مباشر",
-      get_directions: "احصل على الاتجاهات"
+      get_directions: "احصل على الاتجاهات",
+      finder_title: "الباحث عن أقرب فرع",
+      finder_btn: "العثور على أقرب ورشة",
+      calculating: "جاري حساب المسافة...",
+      nearest_found: "تم العثور على أقرب فرع",
+      distance: "المسافة",
+      open_maps: "ابدأ الملاحة",
+      location_blocked: "نحتاج إذن الموقع للعثور على أقرب ورشة."
     },
     legal: {
       privacy_title: "سياسة الخصوصية",
       terms_title: "شروط الخدمة",
       warranty_title: "سياسة الضمان"
+    },
+    about: {
+      title: "إرث HNS",
+      subtitle: "قصة من التميز عبر الأجيال، الهندسة الدقيقة، والالتزام الراسخ بنزاهة السيارات.",
+      founder_title: "المؤسس والمهندس",
+      founder_name: "محمد أبو الحسين",
+      founder_role: "المؤسس ورئيس مجلس الإدارة",
+      founder_desc: "صاحب الرؤية الذي وضع حجر الأساس لشركة HNS. من خلال تشغيل ثلاثة مواقع استراتيجية في صحم، لم يبنِ السيد أبو الحسين ورشة عمل فحسب؛ بل بنى سمعة قائمة على الموثوقية المطلقة. فلسفته بمثابة البوصلة الأخلاقية للشركة: الدقة ليست اختيارية، بل هي المعيار الوحيد.",
+      legacy_stat_1: "3 فروع رئيسية",
+      legacy_stat_2: "30 عاماً",
+      legacy_stat_3: "عائلة واحدة",
+      next_gen_title: "التطور المستمر",
+      rifat_name: "محمد رفعت حسين",
+      rifat_role: "المدير العام والوريث",
+      rifat_desc: "مهندس العصر الحديث لشركة HNS. يجمع رفعت بين التميز الأكاديمي من جامعة صحار والرؤية التشغيلية العميقة، ويقوم بتحويل الشركة العائلية إلى مؤسسة قابلة للتطوير ومدفوعة بالتكنولوجيا. إنه يمثل الجسر بين القيم التقليدية والابتكار المستقبلي، مقدراً له قيادة HNS إلى الشهرة الدولية.",
+      ashiq_name: "محمد عاشق",
+      ashiq_role: "الخبير الاستراتيجي العالمي",
+      ashiq_desc: "العين العالمية لشركة HNS. من مقره في إسبانيا، يحلل عاشق اتجاهات السيارات الدولية ومعايير الخدمة الأوروبية. يضمن دوره بقاء HNS في الطليعة، واستيراد المنهجيات المتطورة التي تحافظ على مستوى الشركة عالمياً.",
+      vision_title: "آفاقنا",
+      vision_desc: "نحن لا نقوم بصيانة السيارات فحسب؛ نحن نهندس الثقة. من قلب صحم إلى الساحة العالمية، تعيد HNS تعريف معنى العناية بالآلة."
+    },
+    blog: {
+      title: "مجلة الأداء",
+      subtitle: "رؤى تقنية، بروتوكولات صيانة، وثقافة السيارات من فريق هندسة HNS.",
+      featured: "مقال مميز",
+      read_more: "اقرأ المقال",
+      read_time: "دقيقة قراءة",
+      search_placeholder: "ابحث في المقالات...",
+      categories: {
+        all: "كل المقالات",
+        tech: "تقني",
+        maintenance: "صيانة",
+        industry: "أخبار الصناعة",
+        tips: "نصائح الخبراء"
+      }
     }
   }
 };

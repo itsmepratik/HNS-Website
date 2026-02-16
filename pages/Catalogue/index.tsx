@@ -1,32 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Section } from './ui/Section';
-import { useLanguage } from '../contexts/LanguageContext';
-import { Filter, Star, Search, Sliders, Heart, Zap, Eye, X, ArrowUpDown, ChevronDown } from 'lucide-react';
-import { Product } from '../types';
-import { Button } from './ui/Button';
+import { Section } from '../../components/ui/Section';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { Filter, Star, Search, Sliders, Heart, Zap, Eye, X, ArrowUpDown, ChevronDown, Loader2, Tag } from 'lucide-react';
+import { Button } from '../../components/ui/Button';
+import { CustomDropdown } from '../../components/ui/CustomDropdown';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { useProducts } from '../../hooks/useData';
+import { Product } from '../../types';
 
-const MOCK_PRODUCTS: Product[] = [
-  { id: '1', name: 'Castrol EDGE 5W-30', brand: 'Castrol', price: 12.500, category: 'Oil', viscosity: '5W-30', image: 'https://images.unsplash.com/photo-1632832569501-7132a49257d0?q=80&w=400&auto=format&fit=crop', rating: 4.8, reviews: 124 },
-  { id: '2', name: 'Mobil 1 Extended Performance', brand: 'Mobil 1', price: 14.200, category: 'Oil', viscosity: '0W-20', image: 'https://images.unsplash.com/photo-1626126605232-1b072834b6e5?q=80&w=400&auto=format&fit=crop', rating: 4.9, reviews: 89 },
-  { id: '3', name: 'Shell Helix Ultra', brand: 'Shell', price: 11.000, category: 'Oil', viscosity: '5W-40', image: 'https://images.unsplash.com/photo-1517420879524-86d64ac2f339?q=80&w=400&auto=format&fit=crop', rating: 4.7, reviews: 210 },
-  { id: '4', name: 'Bosch Premium Oil Filter', brand: 'Bosch', price: 3.500, category: 'Filter', image: 'https://m.media-amazon.com/images/I/71p0eK7+XRL._AC_SL1500_.jpg', rating: 4.6, reviews: 56 },
-  { id: '5', name: 'K&N Performance Air Filter', brand: 'K&N', price: 18.500, category: 'Filter', image: 'https://m.media-amazon.com/images/I/71uKcdX-dVL._AC_SL1500_.jpg', rating: 4.9, reviews: 42 },
-  { id: '6', name: 'Liqui Moly Ceratec', brand: 'Liqui Moly', price: 9.800, category: 'Additive', image: 'https://m.media-amazon.com/images/I/61kRk-Q9-dL._AC_SL1000_.jpg', rating: 4.9, reviews: 315 },
-  { id: '7', name: 'Valvoline Advanced', brand: 'Valvoline', price: 10.200, category: 'Oil', viscosity: '5W-20', image: 'https://images.unsplash.com/photo-1550966871-3ed3c67e6790?q=80&w=400&auto=format&fit=crop', rating: 4.5, reviews: 78 },
-  { id: '8', name: 'Royal Purple HPS', brand: 'Royal Purple', price: 15.000, category: 'Oil', viscosity: '10W-40', image: 'https://images.unsplash.com/photo-1606517723933-2866b1d440da?q=80&w=400&auto=format&fit=crop', rating: 4.8, reviews: 65 },
-];
-
-export const Catalogue: React.FC = () => {
+export const CataloguePage: React.FC = () => {
   const { t } = useLanguage();
+  const { data: products, loading } = useProducts();
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [activeViscosity, setActiveViscosity] = useState<string>('All');
+  const [activeBrand, setActiveBrand] = useState<string>('All');
   const [priceRange, setPriceRange] = useState<number>(30);
   const [savedProducts, setSavedProducts] = useState<string[]>([]);
   const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<string>('featured');
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  
+  // Search State with Debouncing
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+  const [searchSuggestions, setSearchSuggestions] = useState<Product[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
   
   const mobileFilterRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -40,7 +40,45 @@ export const Catalogue: React.FC = () => {
         console.error("Failed to parse saved products", e);
       }
     }
+    
+    // Click outside handler for search suggestions
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+
   }, []);
+
+  // Debounce Effect
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 300); // 300ms delay
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchQuery]);
+
+  // Update suggestions based on debounced query
+  useEffect(() => {
+    if (debouncedSearchQuery.length > 1 && products) {
+      const matches = products.filter(p => 
+        isMatch(p.name, debouncedSearchQuery) || 
+        isMatch(p.brand, debouncedSearchQuery) || 
+        isMatch(p.id, debouncedSearchQuery) ||
+        isMatch(p.category, debouncedSearchQuery)
+      ).slice(0, 5);
+      setSearchSuggestions(matches);
+      setShowSuggestions(true);
+    } else {
+      setSearchSuggestions([]);
+      setShowSuggestions(false);
+    }
+  }, [debouncedSearchQuery, products]);
 
   // Animation for mobile filter sidebar
   useGSAP(() => {
@@ -66,8 +104,57 @@ export const Catalogue: React.FC = () => {
     });
   };
 
+  // Improved Matching Logic (Fuzzy-ish)
+  const isMatch = (text: string, query: string) => {
+    if (!text || !query) return false;
+    const t = text.toLowerCase();
+    const q = query.toLowerCase();
+    
+    // Direct match
+    if (t.includes(q)) return true;
+    
+    // Word splitting match (e.g. "Mobil 1" matches "mobil")
+    const queryWords = q.split(' ');
+    const textWords = t.split(' ');
+    
+    // Check if every query word appears in the text
+    const allWordsMatch = queryWords.every(qw => textWords.some(tw => tw.includes(qw)));
+    if (allWordsMatch) return true;
+
+    // Simple fuzzy check for missed characters (allow 1 missed char for words > 4 length)
+    // E.g. "cstrol" (missing a) matches "castrol"
+    if (q.length > 3) {
+      let matchCount = 0;
+      let qIdx = 0;
+      for (let i = 0; i < t.length && qIdx < q.length; i++) {
+        if (t[i] === q[qIdx]) {
+          matchCount++;
+          qIdx++;
+        }
+      }
+      // If we matched at least 80% of the characters in order
+      if (matchCount / q.length > 0.8) return true;
+    }
+
+    return false;
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSearchQuery(val);
+    // Suggestions are now handled by the debounce effect
+  };
+
+  const selectSuggestion = (product: Product) => {
+    setSearchQuery(product.name);
+    setShowSuggestions(false);
+  };
+
   const categories = ['All', 'Oil', 'Filter', 'Additive'];
   const viscosities = ['All', '0W-20', '5W-20', '5W-30', '5W-40', '10W-40'];
+  // Derive brands dynamically from products
+  const brands = ['All', ...Array.from(new Set(products?.map(p => p.brand))).sort()];
+  
   const sortOptions = [
     { value: 'featured', label: 'Featured' },
     { value: 'price-low', label: 'Price: Low to High' },
@@ -75,12 +162,15 @@ export const Catalogue: React.FC = () => {
     { value: 'rating', label: 'Top Rated' }
   ];
 
-  const filteredProducts = MOCK_PRODUCTS.filter(product => {
+  // Use debouncedSearchQuery for filtering instead of immediate searchQuery
+  const filteredProducts = products?.filter(product => {
     const catMatch = activeCategory === 'All' || product.category === activeCategory;
     const viscMatch = activeViscosity === 'All' || !product.viscosity || product.viscosity === activeViscosity;
+    const brandMatch = activeBrand === 'All' || product.brand === activeBrand;
     const priceMatch = product.price <= priceRange;
-    return catMatch && viscMatch && priceMatch;
-  });
+    const searchMatch = !debouncedSearchQuery || isMatch(product.name, debouncedSearchQuery) || isMatch(product.brand, debouncedSearchQuery);
+    return catMatch && viscMatch && brandMatch && priceMatch && searchMatch;
+  }) || [];
 
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortBy) {
@@ -104,6 +194,22 @@ export const Catalogue: React.FC = () => {
               <span className={`font-medium transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1 ${activeCategory === cat ? 'text-brand-500' : ''}`}>{cat}</span>
               <input type="radio" name="category" className="hidden" onChange={() => setActiveCategory(cat)} />
               {activeCategory === cat && <div className="w-1.5 h-1.5 rounded-full bg-brand-500 shadow-[0_0_8px_rgba(213,243,101,0.8)]"></div>}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Brands */}
+      <div>
+        <h4 className="text-neutral-500 text-[10px] font-mono uppercase tracking-wider mb-4 flex items-center gap-2">
+           <Tag size={10} /> Brand
+        </h4>
+        <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar pr-2">
+          {brands.map(brand => (
+            <label key={brand} className={`group flex items-center justify-between p-2.5 rounded-lg text-xs cursor-pointer transition-all border ${activeBrand === brand ? 'bg-brand-500/10 border-brand-500/50 text-white' : 'bg-transparent border-transparent text-neutral-400 hover:bg-white/5 hover:text-white'}`}>
+              <span className={`transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1 ${activeBrand === brand ? 'text-brand-500' : ''}`}>{brand}</span>
+              <input type="radio" name="brand" className="hidden" onChange={() => setActiveBrand(brand)} />
+              {activeBrand === brand && <div className="w-1.5 h-1.5 rounded-full bg-brand-500"></div>}
             </label>
           ))}
         </div>
@@ -181,7 +287,8 @@ export const Catalogue: React.FC = () => {
          </div>
       </div>
 
-      <Section className="mb-4 relative z-10" noPadding>
+      {/* Updated Z-Index from z-10 to z-30 to ensure search suggestions appear above grid */}
+      <Section className="mb-16 relative z-30" noPadding>
          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/5 mb-8">
             <div>
                <div className="flex items-center gap-2 mb-3">
@@ -195,37 +302,64 @@ export const Catalogue: React.FC = () => {
                <p className="text-neutral-400 max-w-xl text-lg font-light leading-relaxed">{t('catalogue.subtitle')}</p>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-               <div className="relative group w-full md:w-80">
+            <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto relative z-20">
+               {/* Enhanced Search Bar */}
+               <div ref={searchRef} className="relative group w-full md:w-80">
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-brand-500/20 to-white/10 rounded-xl blur opacity-0 group-focus-within:opacity-100 transition duration-500"></div>
                   <div className="relative flex items-center bg-[#0a0a0a] border border-white/10 rounded-xl overflow-hidden group-focus-within:border-brand-500/50 transition-colors">
                      <Search className="ml-4 text-neutral-500 w-4 h-4 rtl:ml-0 rtl:mr-4 group-focus-within:text-brand-500 transition-colors" />
                      <input 
                         type="text" 
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        onFocus={() => { if(debouncedSearchQuery.length > 1) setShowSuggestions(true); }}
                         placeholder="Search Part ID or Name..." 
                         className="w-full bg-transparent border-none px-4 py-3 text-sm text-white focus:ring-0 placeholder:text-neutral-600 font-mono" 
                      />
+                     {searchQuery && (
+                       <button onClick={() => { setSearchQuery(''); setSearchSuggestions([]); }} className="mr-3 text-neutral-500 hover:text-white">
+                         <X size={14} />
+                       </button>
+                     )}
                   </div>
+
+                  {/* Auto-suggestions Dropdown - SOLID STYLE with High Z-Index */}
+                  {showSuggestions && searchSuggestions.length > 0 && (
+                     <div className="absolute top-full left-0 right-0 mt-2 bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden shadow-xl z-50 animate-in fade-in slide-in-from-top-2">
+                        <div className="p-2">
+                           <p className="text-[10px] text-neutral-500 font-mono uppercase tracking-wider px-3 py-2">Suggestions</p>
+                           {searchSuggestions.map(product => (
+                              <button 
+                                 key={product.id}
+                                 onClick={() => selectSuggestion(product)}
+                                 className="w-full flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg text-left transition-colors group"
+                              >
+                                 <img src={product.image} alt={product.name} className="w-8 h-8 rounded object-cover opacity-70 group-hover:opacity-100" />
+                                 <div className="min-w-0">
+                                    <p className="text-sm text-white font-medium truncate group-hover:text-brand-500 transition-colors">{product.name}</p>
+                                    <p className="text-[10px] text-neutral-500 uppercase">{product.category}</p>
+                                 </div>
+                              </button>
+                           ))}
+                        </div>
+                     </div>
+                  )}
                </div>
             </div>
          </div>
          
          {/* Mobile Toolbar */}
-         <div className="lg:hidden flex gap-4 mb-6">
+         <div className="lg:hidden flex gap-4 mb-6 z-10 relative">
             <Button variant="secondary" className="flex-1" onClick={() => setIsMobileFilterOpen(true)}>
                <Sliders size={16} className="mr-2" /> Filters
             </Button>
             <div className="relative flex-1">
-               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <ArrowUpDown size={16} className="text-neutral-400" />
-               </div>
-               <select 
+               <CustomDropdown
+                  options={sortOptions}
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full bg-[#111] border border-white/20 text-white text-sm rounded-lg pl-10 pr-4 py-2.5 appearance-none focus:border-brand-500 focus:outline-none"
-               >
-                  {sortOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-               </select>
+                  onChange={setSortBy}
+                  placeholder="Sort by"
+               />
             </div>
          </div>
       </Section>
@@ -254,26 +388,30 @@ export const Catalogue: React.FC = () => {
         {/* Product Grid */}
         <div className="lg:col-span-3">
           {/* Desktop Sort Bar */}
-          <div className="hidden lg:flex justify-between items-center mb-6">
+          <div className="hidden lg:flex justify-between items-center mb-6 z-20 relative">
              <p className="text-sm text-neutral-500 font-mono">
                Showing {sortedProducts.length} results
              </p>
              <div className="flex items-center gap-3">
                <span className="text-sm text-neutral-400">Sort by:</span>
-               <div className="relative">
-                  <select 
+               <div className="w-48">
+                  <CustomDropdown 
+                     options={sortOptions}
                      value={sortBy}
-                     onChange={(e) => setSortBy(e.target.value)}
-                     className="bg-[#111] border border-white/10 text-white text-sm rounded-lg pl-3 pr-8 py-2 appearance-none focus:border-brand-500 focus:outline-none cursor-pointer"
-                  >
-                     {sortOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                  </select>
-                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500 pointer-events-none" />
+                     onChange={setSortBy}
+                     placeholder="Sort by"
+                     className="z-50"
+                  />
                </div>
              </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {loading ? (
+             <div className="flex justify-center items-center min-h-[400px]">
+                <Loader2 className="animate-spin text-brand-500 w-12 h-12" />
+             </div>
+          ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 relative z-10">
             {sortedProducts.map(product => {
                const isSaved = savedProducts.includes(product.id);
                const isHovered = hoveredProduct === product.id;
@@ -355,15 +493,16 @@ export const Catalogue: React.FC = () => {
             );
           })}
           </div>
+          )}
           
-          {sortedProducts.length === 0 && (
+          {!loading && sortedProducts.length === 0 && (
             <div className="min-h-[400px] flex flex-col items-center justify-center text-neutral-500 border border-dashed border-white/10 rounded-2xl bg-[#0a0a0a]">
                <div className="w-20 h-20 rounded-full bg-neutral-900 flex items-center justify-center mb-6">
                   <Sliders size={32} className="opacity-50" />
                </div>
                <h3 className="text-xl font-bold text-white mb-2">No Matches Found</h3>
                <p className="text-sm text-neutral-400 max-w-xs text-center mb-6">Adjust your filters to find what you're looking for in our inventory.</p>
-               <Button variant="outline" onClick={() => {setActiveCategory('All'); setActiveViscosity('All'); setPriceRange(30);}}>
+               <Button variant="outline" onClick={() => {setActiveCategory('All'); setActiveViscosity('All'); setActiveBrand('All'); setPriceRange(30); setSearchQuery('');}}>
                   Reset All Filters
                </Button>
             </div>

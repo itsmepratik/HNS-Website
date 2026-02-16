@@ -3,9 +3,10 @@ import { Section } from './ui/Section';
 import { Button } from './ui/Button';
 import { useLanguage } from '../contexts/LanguageContext';
 import { GoogleGenAI, Type } from "@google/genai";
-import { Cpu, Thermometer, MapPin, Gauge, AlertCircle, RefreshCw, Car, Activity, Zap, ChevronRight, CheckCircle, GripHorizontal } from 'lucide-react';
+import { Cpu, Thermometer, MapPin, Gauge, AlertCircle, RefreshCw, Car, Activity, Zap, CheckCircle, GripHorizontal, Wrench, AlertTriangle } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { CustomDropdown } from './ui/CustomDropdown';
 
 export const AIRecommendation: React.FC = () => {
   const { t } = useLanguage();
@@ -21,13 +22,20 @@ export const AIRecommendation: React.FC = () => {
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState('');
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleBookService = () => {
     document.getElementById('offer')?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  const weatherOptions = [
+    { value: "Hot", label: "EXTREME HEAT (>35°C)" },
+    { value: "Moderate", label: "MODERATE (15°C - 30°C)" },
+    { value: "Cold", label: "COLD (<10°C)" },
+    { value: "Desert", label: "DESERT DUST & HEAT" }
+  ];
 
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,16 +55,21 @@ export const AIRecommendation: React.FC = () => {
         Mileage: ${formData.mileage}
         Conditions: ${formData.location}, ${formData.weather}
         
-        Act as a senior automotive engineer. Provide a concise oil recommendation.
-        Keep "reasoning" and "maintenance_tip" extremely short and punchy (max 20 words each).
+        Act as a senior automotive engineer. Provide a detailed analysis.
+        
+        1. Recommend the exact oil (Viscosity, Type, Grade).
+        2. Identify 3 potential common maintenance issues specifically for this vehicle at this mileage and weather condition (e.g. desert dust affects filters, heat affects cooling, timing belt at 100k, etc).
+        3. Suggest 3 specific services relevant to these conditions (e.g. AC Gas Top-up, Engine Flush, etc).
         
         Return JSON:
         - title: "Engine Oil Recommendation for [Year] [Make] [Model]..."
         - viscosity: e.g. "5W-30"
         - oil_type: e.g. "Fully Synthetic"
         - grade: e.g. "High Mileage" (if mileage > 75000), "Performance", or "Standard"
-        - reasoning: Brief technical reason.
-        - maintenance_tip: Brief tip.
+        - reasoning: Brief technical reason for oil choice (max 20 words).
+        - maintenance_tip: Brief general tip (max 20 words).
+        - common_issues: Array of 3 strings (e.g. "Clogged Air Filters (Dust)", "Battery Degradation (Heat)", "Timing Belt Wear").
+        - recommended_services: Array of 3 strings (e.g. "AC System Sanitization", "Coolant Flush", "Transmission Fluid Check").
       `;
 
       const response = await ai.models.generateContent({
@@ -73,8 +86,16 @@ export const AIRecommendation: React.FC = () => {
               grade: { type: Type.STRING },
               reasoning: { type: Type.STRING },
               maintenance_tip: { type: Type.STRING },
+              common_issues: { 
+                type: Type.ARRAY, 
+                items: { type: Type.STRING } 
+              },
+              recommended_services: { 
+                type: Type.ARRAY, 
+                items: { type: Type.STRING } 
+              },
             },
-            required: ["title", "viscosity", "oil_type", "grade", "reasoning", "maintenance_tip"],
+            required: ["title", "viscosity", "oil_type", "grade", "reasoning", "maintenance_tip", "common_issues", "recommended_services"],
           },
         },
       });
@@ -99,7 +120,8 @@ export const AIRecommendation: React.FC = () => {
        tl.from(".result-dashboard", { opacity: 0, scale: 0.98, duration: 0.6, ease: "power2.out" })
          .from(".result-header", { y: -10, opacity: 0, duration: 0.4 })
          .from(".result-gauge", { scale: 0.8, opacity: 0, duration: 0.5, ease: "back.out(1.2)" }, "-=0.2")
-         .from(".result-card-item", { y: 20, opacity: 0, duration: 0.4, stagger: 0.1 }, "-=0.3");
+         .from(".result-card-item", { y: 20, opacity: 0, duration: 0.4, stagger: 0.1 }, "-=0.3")
+         .from(".result-list-item", { x: -10, opacity: 0, duration: 0.3, stagger: 0.05 }, "-=0.2");
     }
   }, [result]);
 
@@ -204,18 +226,15 @@ export const AIRecommendation: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="group">
+                      <div className="group z-50">
                         <label className="text-[10px] text-brand-500 font-mono uppercase mb-1.5 block tracking-wider">{t('ai.weather')}</label>
-                        <div className="relative">
-                          <Thermometer className="absolute left-3.5 top-3.5 text-neutral-600 w-4 h-4" />
-                          <select name="weather" value={formData.weather} onChange={handleInputChange} className="w-full bg-[#151515] border border-white/10 rounded-lg pl-10 pr-4 py-3 text-white text-sm focus:border-brand-500 focus:bg-brand-500/5 outline-none appearance-none font-mono cursor-pointer">
-                             <option value="Hot">EXTREME HEAT (>35°C)</option>
-                             <option value="Moderate">MODERATE (15°C - 30°C)</option>
-                             <option value="Cold">COLD (&lt;10°C)</option>
-                             <option value="Desert">DESERT DUST & HEAT</option>
-                          </select>
-                          <ChevronRight className="absolute right-3 top-3.5 text-neutral-600 w-4 h-4 rotate-90" />
-                        </div>
+                        <CustomDropdown
+                           options={weatherOptions}
+                           value={formData.weather}
+                           onChange={(val) => setFormData(prev => ({ ...prev, weather: val }))}
+                           placeholder="Select Weather"
+                           icon={<Thermometer className="w-4 h-4" />}
+                        />
                       </div>
 
                       <div className="pt-4 mt-auto">
@@ -250,7 +269,7 @@ export const AIRecommendation: React.FC = () => {
                    <div className="absolute inset-0 pointer-events-none border border-white/5 rounded-lg m-1 z-20"></div>
                    
                    {result ? (
-                      <div className="result-dashboard h-full p-8 flex flex-col gap-8 relative z-10">
+                      <div className="result-dashboard h-full p-8 flex flex-col gap-6 relative z-10">
                          {/* Header */}
                          <div className="result-header flex justify-between items-start border-b border-white/10 pb-6">
                             <div className="space-y-2">
@@ -272,35 +291,23 @@ export const AIRecommendation: React.FC = () => {
                             </div>
                          </div>
 
-                         {/* Main Gauge - Centralized with Dynamic Glow */}
-                         <div className="result-gauge flex-grow flex items-center justify-center py-4 relative">
-                            {/* Dynamic Glow Behind Gauge */}
+                         {/* Main Gauge */}
+                         <div className="result-gauge flex items-center justify-center py-2 relative min-h-[160px]">
                             <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 ${dynamicTheme.accent} blur-[100px] opacity-20 rounded-full`}></div>
-
-                            <div className="relative w-64 h-64 flex items-center justify-center">
-                               <h4 className="absolute -top-6 text-[10px] text-neutral-500 font-mono uppercase tracking-[0.2em]">Recommended</h4>
-                               
-                               {/* Rotating outer rings */}
+                            <div className="relative w-40 h-40 flex items-center justify-center">
                                <div className="absolute inset-0 border border-dashed border-white/20 rounded-full"></div>
-                               <div className={`absolute inset-4 border-2 border-dashed ${dynamicTheme.borderColor} rounded-full animate-[spin_20s_linear_infinite] opacity-50`}></div>
-                               <div className={`absolute inset-4 border ${dynamicTheme.borderColor} rounded-full opacity-20`}></div>
-                               
-                               {/* Center Content */}
+                               <div className={`absolute inset-2 border-2 border-dashed ${dynamicTheme.borderColor} rounded-full animate-[spin_20s_linear_infinite] opacity-50`}></div>
                                <div className="text-center z-10 flex flex-col items-center justify-center">
-                                  <span className="text-5xl font-bold text-white tracking-tighter mb-1 drop-shadow-2xl">{result.viscosity}</span>
-                                  <span className="text-lg text-white font-medium mb-1">{result.oil_type}</span>
-                                  <span className={`text-sm font-bold uppercase tracking-wider ${dynamicTheme.color}`}>{result.grade}</span>
-                               </div>
-                               
-                               <div className={`absolute -bottom-5 ${dynamicTheme.accent} text-black text-xs font-bold px-3 py-1 rounded-sm uppercase tracking-wider shadow-[0_0_20px_rgba(0,0,0,0.4)]`}>
-                                  {result.oil_type.includes('Synthetic') ? 'Synthetic' : 'Standard'}
+                                  <span className="text-3xl font-bold text-white tracking-tighter mb-1 drop-shadow-2xl">{result.viscosity}</span>
+                                  <span className="text-xs text-white font-medium mb-1">{result.oil_type}</span>
+                                  <span className={`text-[10px] font-bold uppercase tracking-wider ${dynamicTheme.color}`}>{result.grade}</span>
                                </div>
                             </div>
                          </div>
 
-                         {/* Bottom Info Grid */}
-                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-auto">
-                            <div className="result-card-item bg-[#111]/80 backdrop-blur-sm border border-white/10 rounded-lg p-5 relative overflow-hidden group hover:border-white/20 transition-colors">
+                         {/* Info Grid - Tech Analysis & Maintenance */}
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="result-card-item bg-[#111]/80 backdrop-blur-sm border border-white/10 rounded-lg p-5 group hover:border-white/20 transition-colors">
                                <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-3 flex items-center gap-2">
                                   <Activity size={14} className="text-blue-500" /> Technical Analysis
                                </h4>
@@ -309,7 +316,7 @@ export const AIRecommendation: React.FC = () => {
                                </p>
                             </div>
 
-                            <div className="result-card-item bg-[#111]/80 backdrop-blur-sm border border-white/10 rounded-lg p-5 relative overflow-hidden group hover:border-white/20 transition-colors">
+                            <div className="result-card-item bg-[#111]/80 backdrop-blur-sm border border-white/10 rounded-lg p-5 group hover:border-white/20 transition-colors">
                                <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-3 flex items-center gap-2">
                                   <Zap size={14} className={dynamicTheme.color} /> Maintenance Directive
                                </h4>
@@ -318,6 +325,40 @@ export const AIRecommendation: React.FC = () => {
                                </p>
                             </div>
                          </div>
+
+                         {/* Common Issues & Recommended Services */}
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-auto">
+                            {result.common_issues && (
+                              <div className="result-card-item bg-red-950/10 border border-red-500/20 rounded-lg p-5">
+                                 <h4 className="text-xs font-bold text-red-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                    <AlertTriangle size={14} /> Potential Risks
+                                 </h4>
+                                 <ul className="space-y-2">
+                                    {result.common_issues.map((issue: string, idx: number) => (
+                                       <li key={idx} className="result-list-item text-xs text-red-200/80 flex items-start gap-2">
+                                          <span className="w-1 h-1 rounded-full bg-red-500 mt-1.5 shrink-0"></span> {issue}
+                                       </li>
+                                    ))}
+                                 </ul>
+                              </div>
+                            )}
+
+                            {result.recommended_services && (
+                              <div className="result-card-item bg-brand-500/5 border border-brand-500/20 rounded-lg p-5">
+                                 <h4 className="text-xs font-bold text-brand-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                    <Wrench size={14} /> Recommended Services
+                                 </h4>
+                                 <ul className="space-y-2">
+                                    {result.recommended_services.map((service: string, idx: number) => (
+                                       <li key={idx} className="result-list-item text-xs text-brand-100/80 flex items-start gap-2">
+                                          <span className="w-1 h-1 rounded-full bg-brand-500 mt-1.5 shrink-0"></span> {service}
+                                       </li>
+                                    ))}
+                                 </ul>
+                              </div>
+                            )}
+                         </div>
+
                       </div>
                    ) : (
                       <div className="h-full flex flex-col items-center justify-center text-neutral-600 space-y-6">

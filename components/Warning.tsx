@@ -4,7 +4,7 @@ import { AlertCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export const Warning: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, formatNumber } = useLanguage();
 
   return (
     <Section background="darker" className="border-t border-red-900/20 relative overflow-hidden">
@@ -26,16 +26,16 @@ export const Warning: React.FC = () => {
              <h4 className="text-white font-bold mb-4">{t('warning.bill_title')}</h4>
              <div className="flex items-center justify-between mb-2">
                <span className="text-neutral-400">{t('warning.engine_block')}</span>
-               <span className="text-white font-mono">1,200 OMR</span>
+               <span className="text-white font-mono">{formatNumber('1,200')} OMR</span>
              </div>
              <div className="flex items-center justify-between mb-2">
                <span className="text-neutral-400">{t('warning.labor')}</span>
-               <span className="text-white font-mono">900 OMR</span>
+               <span className="text-white font-mono">{formatNumber('900')} OMR</span>
              </div>
              <div className="h-px bg-red-900/30 my-3"></div>
              <div className="flex items-center justify-between">
                <span className="text-red-400 font-bold">{t('warning.total')}</span>
-               <span className="text-red-500 font-mono font-bold text-xl">2,100 OMR</span>
+               <span className="text-red-500 font-mono font-bold text-xl">{formatNumber('2,100')} OMR</span>
              </div>
           </div>
         </div>
@@ -43,8 +43,8 @@ export const Warning: React.FC = () => {
         <div className="order-1 md:order-2 flex justify-center">
            <div className="relative w-full max-w-sm aspect-square bg-neutral-900 rounded-full flex items-center justify-center border-4 border-neutral-800 shadow-[0_0_100px_rgba(220,38,38,0.2)]">
               <div className="text-center">
-                 <p className="text-neutral-500 font-mono uppercase text-sm mb-2">{t('warning.vs')}</p>
-                 <p className="text-6xl font-bold text-white">7<span className="text-2xl text-neutral-500">.500</span></p>
+                 <p className="text-neutral-500 font-mono uppercase text-sm mb-2">Average</p>
+                 <p className="text-5xl md:text-6xl font-bold text-white">{formatNumber('7.5')} <span className="text-xl md:text-2xl text-neutral-500">Rials</span></p>
                  <p className="text-emerald-500 mt-4 font-bold">{t('warning.safe')}</p>
               </div>
               
