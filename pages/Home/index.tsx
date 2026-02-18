@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { Hero } from '../../components/Hero';
 import { Brands } from '../../components/Brands';

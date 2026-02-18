@@ -36,3 +36,21 @@ export interface Product {
   rating: number;
   reviews: number;
 }
+
+// Database Request Types
+export interface BookingRequest {
+  name: string;
+  phone: string;
+  vehicle: string;
+  serviceType: 'premium' | 'standard';
+  preferredDate: string;
+  timestamp: string;
+}
+
+export interface QuoteRequest {
+  name: string;
+  phone: string;
+  vehicle: string;
+  packageType: 'Standard' | 'Premium' | 'Fleet';
+  timestamp: string;
+}

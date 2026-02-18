@@ -1,34 +1,58 @@
-
 import { useState, useEffect } from 'react';
-import { MOCK_PRODUCTS, MOCK_BLOG_POSTS, MOCK_LOCATIONS } from '../services/mockData';
+import { api } from '../services/api';
 import { Product } from '../types';
 
-// Generic data fetcher hook to simulate async API calls
-function useAsyncData<T>(mockData: T, delay = 500) {
-  const [data, setData] = useState<T | null>(null);
+export const useProducts = () => {
+  const [data, setData] = useState<Product[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setData(mockData);
-      setLoading(false);
-    }, delay);
-
-    return () => clearTimeout(timer);
-  }, [mockData, delay]);
+    const fetchData = async () => {
+      try {
+        const result = await api.products.list();
+        setData(result);
+        setLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('Failed to fetch products'));
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   return { data, loading, error };
-}
-
-export const useProducts = () => {
-  return useAsyncData<Product[]>(MOCK_PRODUCTS);
 };
 
 export const useBlogPosts = () => {
-  return useAsyncData(MOCK_BLOG_POSTS);
+  // Using direct api call pattern similar to products
+  const [data, setData] = useState<any[] | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+       const res = await api.content.getBlogPosts();
+       setData(res);
+       setLoading(false);
+    };
+    fetchData();
+  }, []);
+  
+  return { data, loading };
 };
 
 export const useLocations = () => {
-  return useAsyncData(MOCK_LOCATIONS);
+  const [data, setData] = useState<any[] | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+       const res = await api.content.getLocations();
+       setData(res);
+       setLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  return { data, loading };
 };

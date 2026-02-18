@@ -67,7 +67,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               </li>
               <li className="flex items-center gap-3 text-neutral-400 text-sm">
                 <Phone size={16} className="text-brand-500" />
-                +968 9999 9999
+                +968 7117 0805
               </li>
               <li className="flex items-center gap-3 text-neutral-400 text-sm">
                 <Calendar size={16} className="text-brand-500" />

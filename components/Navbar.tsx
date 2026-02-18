@@ -13,7 +13,7 @@ interface NavbarProps {
 const NavButton = ({ label, onClick, active, tooltip }: { label: string, onClick: () => void, active: boolean, tooltip: string }) => (
   <button 
     onClick={onClick} 
-    className={`group relative flex items-center justify-center gap-1.5 py-2 px-1 transition-colors duration-300 ${active ? 'text-brand-500' : 'text-neutral-400 hover:text-white'}`}
+    className={`group relative flex items-center justify-center gap-1.5 py-2 px-3 transition-colors duration-300 ${active ? 'text-brand-500' : 'text-neutral-400 hover:text-white'}`}
   >
     <span className="relative z-10 font-medium tracking-wide text-sm">{label}</span>
     
@@ -99,12 +99,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView = 'home'
   };
 
   return (
-    <div className={`fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none`}>
+    <div className={`fixed top-6 left-0 right-0 z-50 px-4 md:px-6 pointer-events-none`}>
        <nav 
          ref={navRef}
-         // Removed overflow-hidden to allow tooltips to show
-         // Enhanced liquid glass effect
-         className={`w-full max-w-6xl pointer-events-auto transition-all duration-500 rounded-2xl border
+         className={`w-full pointer-events-auto transition-all duration-500 rounded-2xl border
            ${scrolled || isMobileMenuOpen 
              ? 'bg-[#121212]/80 backdrop-blur-2xl border-white/10 border-t-white/20 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.5)] shadow-[0_0_0_1px_rgba(213,243,101,0.05)]' 
              : 'bg-[#121212]/50 backdrop-blur-xl border-white/5 border-t-white/10 shadow-lg'
@@ -113,9 +111,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView = 'home'
        >
         <div className="flex flex-col">
           {/* Top Bar: Logo & Toggles */}
-          <div className="flex justify-between items-center py-3 px-6">
+          <div className="relative flex justify-between items-center py-3 px-6">
+            
+            {/* Left: Logo */}
             <div 
-              className="flex items-center gap-2 cursor-pointer group" 
+              className="flex items-center gap-2 cursor-pointer group z-20" 
               onClick={() => handleNavClick('home')}
             >
               <span className="text-2xl font-bold text-white tracking-tight inline-block group-hover:scale-105 transition-transform">
@@ -123,9 +123,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView = 'home'
               </span>
             </div>
             
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-6 lg:gap-8">
-              <div className="flex gap-4 lg:gap-6 text-sm font-medium text-neutral-400">
+            {/* Center: Desktop Navigation - Absolute Centering */}
+            <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-1 z-10">
                 <NavButton 
                   label={t('nav.about')} 
                   onClick={() => handleNavClick('about')} 
@@ -165,12 +164,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView = 'home'
                   active={false}
                   tooltip={t('nav.tooltips.pricing')}
                 />
-              </div>
-              
-              {/* Divider */}
-              <div className="h-6 w-px bg-white/20"></div>
-              
-              <div className="flex items-center gap-2">
+            </div>
+            
+            {/* Right: Actions */}
+            <div className="flex items-center gap-4 z-20">
+              <div className="hidden md:flex items-center gap-4">
                 <button 
                   onClick={toggleLanguage}
                   className="flex items-center gap-1.5 text-sm font-medium text-neutral-400 hover:text-white transition-colors px-2"
@@ -178,31 +176,30 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView = 'home'
                   <Globe size={18} />
                   <span className="uppercase tracking-wider font-mono text-xs">{language}</span>
                 </button>
+                <Button size="sm" onClick={scrollToOffer} className="shadow-none">
+                  {t('nav.book')}
+                </Button>
               </div>
 
-              <Button size="sm" onClick={scrollToOffer} className="shadow-none">
-                {t('nav.book')}
-              </Button>
+              {/* Mobile Hamburger - Visible on lg and below (since center nav hides) */}
+              <button 
+                className="lg:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-colors relative"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
+                <div className="relative w-6 h-6 flex items-center justify-center">
+                   <div className={`absolute transition-all duration-300 ${isMobileMenuOpen ? 'rotate-90 opacity-0 scale-50' : 'rotate-0 opacity-100 scale-100'}`}>
+                      <Menu size={24} />
+                   </div>
+                   <div className={`absolute transition-all duration-300 ${isMobileMenuOpen ? 'rotate-0 opacity-100 scale-100' : '-rotate-90 opacity-0 scale-50'}`}>
+                      <X size={24} />
+                   </div>
+                </div>
+              </button>
             </div>
-
-            {/* Mobile Hamburger */}
-            <button 
-              className="md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-colors relative"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              <div className="relative w-6 h-6 flex items-center justify-center">
-                 <div className={`absolute transition-all duration-300 ${isMobileMenuOpen ? 'rotate-90 opacity-0 scale-50' : 'rotate-0 opacity-100 scale-100'}`}>
-                    <Menu size={24} />
-                 </div>
-                 <div className={`absolute transition-all duration-300 ${isMobileMenuOpen ? 'rotate-0 opacity-100 scale-100' : '-rotate-90 opacity-0 scale-50'}`}>
-                    <X size={24} />
-                 </div>
-              </div>
-            </button>
           </div>
 
-          {/* Mobile Menu Dropdown - Added overflow-hidden and rounded-b-2xl to clip content properly during animation */}
-          <div ref={menuRef} className="hidden md:hidden border-t border-white/10 bg-black/95 backdrop-blur-xl overflow-hidden rounded-b-2xl">
+          {/* Mobile Menu Dropdown */}
+          <div ref={menuRef} className="hidden lg:hidden border-t border-white/10 bg-black/95 backdrop-blur-xl overflow-hidden rounded-b-2xl">
             <div className="flex flex-col p-6 gap-4">
                 <button 
                   onClick={() => handleNavClick('about')} 

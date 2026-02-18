@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Section } from './ui/Section';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Droplet, Zap, Disc, Disc3, ArrowRight, Settings, Clock, Repeat, MousePointer2 } from 'lucide-react';
+import { Droplet, Zap, Disc, ArrowRight, Settings, Clock, Repeat, MousePointer2, Cog } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -31,7 +31,7 @@ export const Services: React.FC = () => {
       icon: <Zap size={24} />,
       title: t('services.battery_title'),
       desc: t('services.battery_desc'),
-      image: 'https://images.unsplash.com/photo-1623087383792-706c99f0563d?q=80&w=1200&auto=format&fit=crop',
+      image: 'https://images.ctfassets.net/ddla2vz1iht1/nLW7aV0MDv4g1kyzgo73R/a78fd44944b660e7242b6ffab4441938/car_battery.webp',
       specs: { time: formatNumber('20') + ' Min', interval: formatNumber('2-3') + ' Years' }
     },
     {
@@ -39,16 +39,16 @@ export const Services: React.FC = () => {
       icon: <Disc size={24} />,
       title: t('services.brake_title'),
       desc: t('services.brake_desc'),
-      image: 'https://images.unsplash.com/photo-1635437180374-1222956c32df?q=80&w=1200&auto=format&fit=crop',
+      image: 'https://www.eurosparx.co.nz/wp-content/uploads/2024/11/brake-disc-skimming-vs-replacement.jpg',
       specs: { time: formatNumber('45') + ' Min', interval: formatNumber('40,000') + ' KM' }
     },
     {
-      id: 'tire',
-      icon: <Disc3 size={24} />,
+      id: 'parts',
+      icon: <Cog size={24} />,
       title: t('services.tire_title'),
       desc: t('services.tire_desc'),
-      image: 'https://images.unsplash.com/photo-1574755837966-267329243734?q=80&w=1200&auto=format&fit=crop',
-      specs: { time: formatNumber('30') + ' Min', interval: 'On Demand' }
+      image: 'https://popularautoparts.ae/wp-content/uploads/2023/08/auto-spare-parts-1170x600.jpg',
+      specs: { time: 'On Demand', interval: 'As Needed' }
     }
   ], [t, formatNumber]);
 

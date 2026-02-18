@@ -1,19 +1,16 @@
-
 import React, { useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { WhatsAppGlobe } from './components/WhatsAppGlobe';
 
-// Import Pages (using relative paths to the previous component files which are now effectively Page wrappers in the new structure)
-// Note: In a real migration we would update imports to match the new file structure. 
-// For this XML output, I am pointing to the new Page components defined above.
+// Import Pages from dedicated folders
 import { HomePage } from './pages/Home/index';
 import { CataloguePage } from './pages/Catalogue/index';
 import { BlogPage } from './pages/Blog/index';
-import { About } from './components/About'; // Keeping as component for now as per minimal change strategy unless moved
-import { AIRecommendation } from './components/AIRecommendation';
-import { Locations } from './components/Locations';
-import { Legal } from './components/Legal';
+import { AboutPage } from './pages/About/index';
+import { AIAdvisorPage } from './pages/AIAdvisor/index';
+import { LocationsPage } from './pages/Locations/index';
+import { LegalPage } from './pages/Legal/index';
 
 type View = 'home' | 'catalogue' | 'ai-advisor' | 'locations' | 'about' | 'blog' | 'privacy' | 'terms' | 'warranty';
 
@@ -28,16 +25,16 @@ const App: React.FC = () => {
       
       {currentView === 'catalogue' && <CataloguePage />}
 
-      {currentView === 'ai-advisor' && <AIRecommendation />}
+      {currentView === 'ai-advisor' && <AIAdvisorPage />}
 
-      {currentView === 'locations' && <Locations />}
+      {currentView === 'locations' && <LocationsPage />}
       
-      {currentView === 'about' && <About />}
+      {currentView === 'about' && <AboutPage />}
 
       {currentView === 'blog' && <BlogPage />}
 
       {(currentView === 'privacy' || currentView === 'terms' || currentView === 'warranty') && (
-        <Legal type={currentView} />
+        <LegalPage type={currentView} />
       )}
       
       {/* Footer */}

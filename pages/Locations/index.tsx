@@ -1,50 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Section } from './ui/Section';
-import { useLanguage } from '../contexts/LanguageContext';
+import { Section } from '../../components/ui/Section';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { MapPin, Clock, Phone, Navigation, ChevronRight, ChevronLeft, LocateFixed, Loader2 } from 'lucide-react';
-import { Button } from './ui/Button';
+import { Button } from '../../components/ui/Button';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { useLocations } from '../../hooks/useData';
 
-interface Location {
-  id: number;
-  name: string;
-  lat: number;
-  lng: number;
-  addressKey: string;
-  phone: string;
-}
-
-// Updated Coordinates for Saham Sanaiya, Abu Al Durus, and Hafeeth
-const LOCATIONS: Location[] = [
-  { 
-    id: 1, 
-    name: 'Saham Sanaiya', 
-    lat: 24.1750, 
-    lng: 56.8850, 
-    addressKey: 'Saham Industrial Area, Main St, Saham',
-    phone: '+968 7117 0805'
-  },
-  { 
-    id: 2, 
-    name: 'Abu Al Durus', 
-    lat: 24.1934275, 
-    lng: 56.8596748, 
-    addressKey: 'Abu Al Durus Main Road',
-    phone: '+968 7117 0805'
-  },
-  { 
-    id: 3, 
-    name: 'Hafeeth', 
-    lat: 24.0422497, 
-    lng: 57.0050221, 
-    addressKey: 'Al Hafeeth Center, Main Highway',
-    phone: '+968 7117 0805'
-  }
-];
-
-export const Locations: React.FC = () => {
+export const LocationsPage: React.FC = () => {
   const { t, dir } = useLanguage();
+  const { data: locationsData, loading } = useLocations();
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState(0); // -1 for left, 1 for right
   const [isAnimating, setIsAnimating] = useState(false);
@@ -58,10 +23,10 @@ export const Locations: React.FC = () => {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
-  const activeLocation = LOCATIONS[activeIndex];
+  const activeLocation = locationsData ? locationsData[activeIndex] : null;
 
   const changeLocation = (newIndex: number) => {
-    if (newIndex === activeIndex || isAnimating) return;
+    if (!locationsData || newIndex === activeIndex || isAnimating) return;
     
     setIsAnimating(true);
     setDirection(newIndex > activeIndex ? 1 : -1);
@@ -105,15 +70,17 @@ export const Locations: React.FC = () => {
       "-=0.3"
     );
 
-  }, { scope: containerRef, dependencies: [activeIndex] });
+  }, { scope: containerRef, dependencies: [activeIndex, locationsData] });
 
   const nextLocation = () => {
-    const next = (activeIndex + 1) % LOCATIONS.length;
+    if (!locationsData) return;
+    const next = (activeIndex + 1) % locationsData.length;
     changeLocation(next);
   };
 
   const prevLocation = () => {
-    const prev = (activeIndex - 1 + LOCATIONS.length) % LOCATIONS.length;
+    if (!locationsData) return;
+    const prev = (activeIndex - 1 + locationsData.length) % locationsData.length;
     changeLocation(prev);
   };
 
@@ -144,7 +111,7 @@ export const Locations: React.FC = () => {
 
   // Find nearest logic
   const findNearest = () => {
-    if (!navigator.geolocation) {
+    if (!navigator.geolocation || !locationsData) {
       alert(t('locations.location_blocked'));
       return;
     }
@@ -164,7 +131,7 @@ export const Locations: React.FC = () => {
         let closestIdx = 0;
         let minDist = Infinity;
         
-        LOCATIONS.forEach((loc, idx) => {
+        locationsData.forEach((loc, idx) => {
           const d = Math.sqrt(Math.pow(loc.lat - latitude, 2) + Math.pow(loc.lng - longitude, 2));
           if (d < minDist) {
             minDist = d;
@@ -191,6 +158,10 @@ export const Locations: React.FC = () => {
 
   const ChevronPrev = dir === 'rtl' ? ChevronRight : ChevronLeft;
   const ChevronNext = dir === 'rtl' ? ChevronLeft : ChevronRight;
+
+  if (loading || !locationsData) {
+     return <div className="min-h-screen pt-24 pb-12 bg-[#050505] flex items-center justify-center"><Loader2 className="animate-spin text-brand-500 w-12 h-12" /></div>;
+  }
 
   return (
     <div 
@@ -223,7 +194,7 @@ export const Locations: React.FC = () => {
                     <ChevronPrev size={24} />
                  </button>
                  <div className="flex gap-1.5 mx-2">
-                    {LOCATIONS.map((_, idx) => (
+                    {locationsData.map((_, idx) => (
                       <div 
                         key={idx} 
                         onClick={() => changeLocation(idx)}

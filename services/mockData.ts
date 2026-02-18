@@ -73,6 +73,17 @@ export const MOCK_BLOG_POSTS = [
     date: 'Aug 12, 2023',
     readTime: '7 min',
     image: 'https://images.unsplash.com/photo-1533230408800-47867198d89e?q=80&w=800&auto=format&fit=crop'
+  },
+  {
+    id: '7',
+    title: 'Ceramic Coating: Is It Worth The Hype?',
+    excerpt: 'We tested leading ceramic protection brands against the harsh Omani sun. The results might surprise you.',
+    category: 'Tips',
+    author: 'Detailing Desk',
+    date: 'Nov 02, 2023',
+    readTime: '5 min',
+    image: 'https://images.unsplash.com/photo-1601362840469-51e4d8d58785?q=80&w=800&auto=format&fit=crop',
+    featured: false
   }
 ];
 
@@ -83,7 +94,7 @@ export const MOCK_LOCATIONS = [
     lat: 24.1750, 
     lng: 56.8850, 
     addressKey: 'Saham Industrial Area, Main St, Saham',
-    phone: '+968 9999 9999'
+    phone: '+968 7117 0805'
   },
   { 
     id: 2, 
@@ -91,7 +102,7 @@ export const MOCK_LOCATIONS = [
     lat: 24.1934275, 
     lng: 56.8596748, 
     addressKey: 'Abu Al Durus Main Road',
-    phone: '+968 9988 7766'
+    phone: '+968 7117 0805'
   },
   { 
     id: 3, 
@@ -99,6 +110,6 @@ export const MOCK_LOCATIONS = [
     lat: 24.0422497, 
     lng: 57.0050221, 
     addressKey: 'Al Hafeeth Center, Main Highway',
-    phone: '+968 9977 5544'
+    phone: '+968 7117 0805'
   }
 ];

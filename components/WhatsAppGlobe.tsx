@@ -26,7 +26,7 @@ export const WhatsAppGlobe: React.FC = () => {
   }, { scope: containerRef });
 
   const handleClick = () => {
-    window.open("https://wa.me/96899999999", "_blank");
+    window.open("https://wa.link/u7eb3v", "_blank");
   };
 
   return (
